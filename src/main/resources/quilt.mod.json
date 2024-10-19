@@ -1,0 +1,39 @@
+{
+    "schema_version": 1,
+    "quilt_loader": {
+        "group": "${group}",
+        "id": "galactic_curiosities",
+        "version": "${version}",
+        "metadata": {
+            "name": "Galactic curiosities",
+            "description": "this is a mod based on space and magic",
+            "contributors": {
+                "Cosmo": "Owner"
+            },
+            "contact": {},
+            "icon": "assets/example_mod/icon.png",
+            "license": "MIT"
+        },
+        "intermediate_mappings": "net.fabricmc:intermediary",
+        "entrypoints": {
+					"init": "net.quiltmc.users.cosmo.galactic_curiosities.GalacticCuriosities",
+					"client_init": "net.quiltmc.users.cosmo.galactic_curiosities.GalacticCuriositiesClient",
+					"fabric-datagen": "net.quiltmc.users.cosmo.galactic_curiosities.GalacticCuriositiesDataGenerator"
+        },
+        "depends": [
+            {
+                "id": "quilt_loader",
+                "versions": ">=0.19.1"
+            },
+            {
+                "id": "quilted_fabric_api",
+                "versions": ">=7.0.2"
+            },
+            {
+                "id": "minecraft",
+                "versions": ">=1.20"
+            }
+        ]
+    },
+    "mixin": "galactic_curiosities.mixins.json"
+}
