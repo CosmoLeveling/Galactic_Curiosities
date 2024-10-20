@@ -1,5 +1,6 @@
 package net.quiltmc.users.cosmo.galactic_curiosities.entities.custom;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -9,8 +10,11 @@ import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.TypeFilter;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
@@ -38,40 +42,22 @@ public class PlanetEntity extends Entity {
 	@Override
 	public void tick() {
 		super.tick();
-		//Orbiting
-		orbit += 0.1;
-		if (getOrbiting() == null) {
-			setOrbiting(this.uuid);
-		}
-		if (getOrbiting() != null && this.getServer() != null) {
-			this.getServer().getWorlds().forEach(serverWorld -> {
-				if(serverWorld.getEntity(getOrbiting())!=null) {
-					this.setVelocity(10,1,1);
-				}
-			});
-		}
-
 		//Teleporting
-		List<PigEntity> player = getWorld().getEntitiesByType(TypeFilter.instanceOf(PigEntity.class),Box.from(this.getPos()).expand(10), playerEntity -> true);
-		if(player != null&&player.size() != 0 && player.get(0) != null && distanceTo(player.get(0))<=10&&getServer()!= null && getServer().getOverworld() != null && player.get(0).getFirstPassenger() != null) {
-			LivingEntity Teleporting = player.get(0).getPrimaryPassenger();
-			if (Teleporting != null) {
-				Entity Vehicle = null;
-				if (Teleporting.hasVehicle()){
-					Vehicle = Teleporting.getVehicle();
-					Teleporting.getVehicle().discard();
-				}
-				TeleportTarget location = new TeleportTarget(new Vec3d(0,100,0),Teleporting.getVelocity(),Teleporting.getYaw(),Teleporting.getPitch());
-				RegistryKey<World> dimension = World.OVERWORLD;
-				ServerWorld destination = ((ServerWorld) getWorld()).getServer().getWorld(dimension);
-				if (Vehicle != null) {
-					Teleporting.getWorld().spawnEntity(Vehicle);
-					Teleporting.startRiding(Vehicle);
-				}
-				if (destination!=null) QuiltDimensions.teleport(Teleporting,destination,location);
-			}
+		List<LivingEntity> player = getWorld().getEntitiesByType(TypeFilter.instanceOf(LivingEntity.class),Box.from(this.getPos()).expand(20), playerEntity -> true);
+		if (!player.isEmpty()&&distanceTo(player.get(0)) <=20) {
+			onEntityCollision(player.get(0).getWorld(), player.get(0));
 		}
-    }
+	}
+
+	public void onEntityCollision(World world, Entity entity) {
+		if (world instanceof ServerWorld && entity.canUsePortals()) {
+			RegistryKey<World> dimension = RegistryKey.of(RegistryKeys.WORLD,new Identifier("toast","the_nether"));
+			ServerWorld destination = ((ServerWorld) world).getServer().getWorld(dimension);
+			TeleportTarget location = new TeleportTarget(entity.getPos(),entity.getVelocity(),entity.getYaw(),entity.getPitch());
+
+			QuiltDimensions.teleport(entity,destination,location);
+		}
+	}
 
 	@Override
 	public void writeCustomDataToNbt(NbtCompound nbt) {
