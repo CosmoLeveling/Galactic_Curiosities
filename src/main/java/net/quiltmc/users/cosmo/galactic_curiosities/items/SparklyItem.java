@@ -1,6 +1,5 @@
 package net.quiltmc.users.cosmo.galactic_curiosities.items;
 
-import foundry.veil.api.quasar.particle.ParticleEmitter;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;

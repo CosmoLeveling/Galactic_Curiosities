@@ -94,9 +94,9 @@ dependencies {
 		officialMojangMappings()
 	}
 	*/
-	modImplementation("foundry.veil:Veil-fabric-1.20.1:${project.veil_version}") {
-		exclude group: "maven.modrinth"
-	}
+//	modImplementation("foundry.veil:Veil-fabric-1.20.1:${project.veil_version}") {
+//		exclude group: "maven.modrinth"
+//	}
 	modImplementation "org.ladysnake:satin:${satin_version}"
 	// Include Satin as a Jar-in-Jar dependency (optional)
 	include "org.ladysnake:satin:${satin_version}"
